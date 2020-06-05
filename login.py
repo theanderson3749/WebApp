@@ -13,7 +13,12 @@ def extract_cookies():
     for cookie in cookie_jar:
         print("[Cookie Name = %s] -- [Cookie Value = %s]" %(cookie.name, cookie.value))
 
+loginfo = {
+
+}
 if __name__ == "__main__":
     extract_cookies()
-    x = requests.post(URL_SITE, cookies=cookie_jar)
-    print(x.text)
+    with requests.Session() as session:
+        post = session.post(URL_AUTH, cookies=cookie_jar)
+        r = session.get(URL_SITE)
+        print(r.text)
