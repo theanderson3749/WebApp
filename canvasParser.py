@@ -4,10 +4,22 @@ import requests
 from config import userName  #this and password come from another py file i made to hold my info
 from config import passWord
 
+#FUNCTION TO REMOVE SPACES FROM STRING
+def remove(string):
+    return "".join(string.split()) 
 
+#THE URL WE WANT TO REACH
 URL = 'https://csufullerton.instructure.com/courses'
+
+#DATA STRUCTURES
+class_names_list = list()
+class_term_list = list()
+class_grades_list = list()
+
 #basically opens a browser-->logs in and gets the cookies used
-driver = webdriver.Chrome()
+op = webdriver.ChromeOptions()
+op.add_argument('headless')
+driver = webdriver.Chrome(options=op)
 driver.get(URL)
 driver.find_element_by_xpath('//*[@id="username"]').send_keys(userName)  
 driver.find_element_by_xpath('//*[@id="password"]').send_keys(passWord)
@@ -28,25 +40,12 @@ for cookie in cookies_dict:  #setting cookies into the jar for the session
 session.cookies = cookie_jarSess
 r = session.get(URL)
 soup = BeautifulSoup(r.content, 'lxml') #Beautifulsoup object to parse through
-class_table = soup.find_all('table', id ="past_enrollments_table") #finding the table with id and printing out how many we find--> OUTPUT SHOULD BE 1
-print(len(class_table))
+class_table = soup.find('table', id ="past_enrollments_table") #finding the table with id and printing out how many we find--> OUTPUT SHOULD BE 1
+for classes in class_table.find_all('tr', class_= "course-list-table-row"):
+    class_name = classes.find('span', class_="name")
+    name = class_name.text
+    nameAdd = remove(name)
+    class_names_list.append(nameAdd)
 
+print(class_names_list)
 
-
-'''def itemsAvailableAndLink():
-    supremeSite = requests.get('https://www.supremenewyork.com/shop/all')
-    soup = BeautifulSoup(supremeSite.content, 'html.parser')
-    for cat in soup.find_all('ul' , {'id': 'nav-categories'}):
-        count = 0
-        count2 = 0
-        for litag in cat.find_all('li'):
-            print(str(count) + ": " + litag.text)
-            count += 1
-        catNum = input("Enter the catergory number: ")
-        for desired in cat.find_all('li'):
-            if(catNum == str(count2)):
-                extension = (desired.find('a').get('href'))
-                fullLink = ("https://www.supremenewyork.com" + extension)
-                return fullLink
-            count2 += 1
-'''
