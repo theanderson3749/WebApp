@@ -1,0 +1,16 @@
+<!--WE DELETE ALL CODE THAT IS THE SAME AS THE BASE HTML AND ONLY KEEP WHAT IS UNIQUE TO THIS PAGE AND IT ADDS IT ONTO THE BASE TEMPLATE-->
+{% extends "blog/base.html" %}
+{% block content %}
+    {% for post in posts %} <!-- This is djangos way of a for loop in order to put the data from views into html...this is how for loops and if statements look in django-->
+        <article class="media content-section">
+            <div class="media-body">
+                <div class="article-metadata">
+                    <a class="mr-2" href="#">{{ post.author }}</a>
+                    <small class="text-muted">{{ post.date_posted }}</small>
+                </div>
+                <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
+                <p class="article-content">{{ post.content }}</p>
+            </div>
+        </article>
+    {% endfor %} <!-- this tells django that we are done with the for loop-->
+{% endblock content %} 
